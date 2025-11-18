@@ -1,0 +1,31 @@
+@model KutuphaneMVC.Models.Member
+@{
+    ViewData["Title"] = "Üye Sil";
+}
+
+<div class="container mt-5 text-center">
+    <div class="card shadow-lg border-0 rounded-4 w-50 mx-auto">
+        <div class="card-header text-white"
+             style="background: linear-gradient(90deg, #e53935, #ef5350, #ef9a9a);">
+            <h4 class="fw-bold mb-0">⚠️ @ViewData["Title"]</h4>
+        </div>
+
+        <div class="card-body p-4">
+            <h5 class="text-danger mb-4">Bu üyeyi silmek istediğinize emin misiniz?</h5>
+
+            <ul class="list-group text-start shadow-sm mb-4">
+                <li class="list-group-item"><strong>👤 Ad Soyad:</strong> @Model.FullName</li>
+                <li class="list-group-item"><strong>📞 Telefon:</strong> @Model.Phone</li>
+                <li class="list-group-item"><strong>📧 E-posta:</strong> @Model.Email</li>
+            </ul>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="MemberId" />
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="submit" class="btn btn-danger px-4 py-2 fw-semibold rounded-3 shadow-sm">🗑️ Sil</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2 rounded-3">İptal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

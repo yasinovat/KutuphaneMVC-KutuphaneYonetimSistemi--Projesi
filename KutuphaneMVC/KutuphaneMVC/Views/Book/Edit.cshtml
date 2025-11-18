@@ -1,0 +1,54 @@
+@model KutuphaneMVC.Models.Book
+@{
+    ViewData["Title"] = "Kitap Düzenle";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4 w-50 mx-auto animate__animated animate__fadeIn">
+        <div class="card-header text-white text-center"
+             style="background: linear-gradient(90deg, #009688, #4db6ac, #80cbc4);">
+            <h4 class="mb-0 fw-bold">📖 @ViewData["Title"]</h4>
+        </div>
+
+        <div class="card-body p-4">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="BookId" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label fw-semibold text-dark">Kitap Adı</label>
+                    <input asp-for="Title" class="form-control shadow-sm border-0 bg-light" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Author" class="form-label fw-semibold text-dark">Yazar</label>
+                    <input asp-for="Author" class="form-control shadow-sm border-0 bg-light" />
+                    <span asp-validation-for="Author" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Genre" class="form-label fw-semibold text-dark">Tür</label>
+                    <input asp-for="Genre" class="form-control shadow-sm border-0 bg-light" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Stock" class="form-label fw-semibold text-dark">Stok Miktarı</label>
+                    <input asp-for="Stock" type="number" class="form-control shadow-sm border-0 bg-light" />
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2 rounded-3">
+                        ⬅ Geri
+                    </a>
+                    <button type="submit" class="btn btn-turquoise px-4 py-2 rounded-3 fw-semibold shadow-sm">
+                        💾 Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

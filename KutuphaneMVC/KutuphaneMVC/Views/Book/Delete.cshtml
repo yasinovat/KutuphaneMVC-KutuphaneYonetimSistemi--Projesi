@@ -1,0 +1,50 @@
+@model KutuphaneMVC.Models.Book
+@{
+    ViewData["Title"] = "Kitap Sil";
+}
+
+<div class="container mt-5 text-center">
+    <div class="card shadow-lg border-0 rounded-4 w-50 mx-auto animate__animated animate__fadeIn">
+        <div class="card-header text-white"
+             style="background: linear-gradient(90deg, #e53935, #ef5350, #ef9a9a);">
+            <h4 class="mb-0 fw-bold">⚠️ @ViewData["Title"]</h4>
+        </div>
+
+        <div class="card-body p-4">
+            <h5 class="text-danger mb-4">Bu kitabı silmek istediğinize emin misiniz?</h5>
+
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded mb-3 shadow-sm"
+                     style="max-height: 250px; object-fit: cover; border: 3px solid #e0f2f1;" />
+            }
+            else
+            {
+                <div class="no-image text-center py-4 text-muted">
+                    <i class="bi bi-book" style="font-size: 3rem;"></i>
+                    <p>Kapak Görseli Yok</p>
+                </div>
+            }
+
+            <ul class="list-group text-start shadow-sm mb-4">
+                <li class="list-group-item"><strong>📘 Kitap Adı:</strong> @Model.Title</li>
+                <li class="list-group-item"><strong>✍️ Yazar:</strong> @Model.Author</li>
+                <li class="list-group-item"><strong>🏷️ Tür:</strong> @Model.Genre</li>
+                <li class="list-group-item"><strong>📦 Stok:</strong> @Model.Stock</li>
+            </ul>
+
+            <form asp-action="Delete" method="post" class="mt-3">
+                <input type="hidden" asp-for="BookId" />
+
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="submit" class="btn btn-danger px-4 py-2 fw-semibold rounded-3 shadow-sm">
+                        🗑️ Sil
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2 rounded-3">
+                        İptal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

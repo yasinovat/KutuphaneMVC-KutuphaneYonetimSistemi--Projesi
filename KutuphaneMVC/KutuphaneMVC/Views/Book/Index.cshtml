@@ -1,0 +1,84 @@
+@model IEnumerable<KutuphaneMVC.Models.Book>
+@{
+    ViewData["Title"] = "Kitap Galerisi";
+}
+
+<div class="container mt-5">
+    <h2 class="page-title mb-4 text-center">📚 @ViewData["Title"]</h2>
+
+    <!-- Filtreleme Alanı -->
+    <form method="get" asp-action="Index" class="card card-turquoise p-3 mb-5 shadow-sm">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">Kitap Adı</label>
+                <input type="text" name="searchTitle" value="@Context.Request.Query["searchTitle"]"
+                       class="form-control" placeholder="Örn: Suç ve Ceza" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">Yazar</label>
+                <input type="text" name="searchAuthor" value="@Context.Request.Query["searchAuthor"]"
+                       class="form-control" placeholder="Örn: Dostoyevski" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">Tür</label>
+                <input type="text" name="searchGenre" value="@Context.Request.Query["searchGenre"]"
+                       class="form-control" placeholder="Roman, Bilim Kurgu..." />
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-turquoise px-4 fw-semibold">🔍 Filtrele</button>
+            <a asp-action="Index" class="btn btn-outline-secondary ms-2 px-4">❌ Temizle</a>
+        </div>
+    </form>
+
+    <!-- Kitap Kartları (Grid Görünümü) -->
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach (var kitap in Model)
+        {
+            <div class="col">
+                <div class="card book-card h-100 shadow-sm">
+                    <div class="card-img-top-container">
+                        @if (!string.IsNullOrEmpty(kitap.ImageUrl))
+                        {
+                            <img src="@kitap.ImageUrl" alt="@kitap.Title"
+                                 class="card-img-top rounded-top" />
+                        }
+                        else
+                        {
+                            <div class="no-image text-center py-5 text-muted">
+                                <i class="bi bi-book" style="font-size: 3rem;"></i>
+                                <p>Kapak Yok</p>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="card-body text-center">
+                        <h5 class="fw-bold text-dark">@kitap.Title</h5>
+                        <p class="text-muted mb-1">@kitap.Author</p>
+                        <span class="badge bg-turquoise text-white">@kitap.Genre</span>
+                    </div>
+
+                    <div class="card-footer bg-white text-center">
+                        <p class="mb-2">📦 Stok: <strong>@kitap.Stock</strong></p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a asp-action="Edit" asp-route-id="@kitap.BookId" class="btn btn-sm btn-outline-turquoise">✏️</a>
+                            <a asp-action="Delete" asp-route-id="@kitap.BookId" class="btn btn-sm btn-outline-danger">🗑️</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted mt-5">
+            <p>📭 Arama kriterlerine uygun kitap bulunamadı.</p>
+        </div>
+    }
+</div>
+
+

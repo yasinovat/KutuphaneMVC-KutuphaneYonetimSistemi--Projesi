@@ -1,0 +1,52 @@
+@model KutuphaneMVC.Models.Book
+@{
+    ViewData["Title"] = "Yeni Kitap Ekle";
+}
+
+<div class="container mt-5">
+    <div class="card card-turquoise w-50 mx-auto">
+        <div class="card-header card-header-turquoise text-center py-3">
+            <h4 class="fw-bold mb-0">@ViewData["Title"]</h4>
+        </div>
+
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label fw-semibold text-dark">Kitap Adı</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Author" class="form-label fw-semibold text-dark">Yazar</label>
+                    <input asp-for="Author" class="form-control" />
+                    <span asp-validation-for="Author" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Genre" class="form-label fw-semibold text-dark">Tür</label>
+                    <input asp-for="Genre" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Stock" class="form-label fw-semibold text-dark">Stok Miktarı</label>
+                    <input asp-for="Stock" type="number" min="1" class="form-control" />
+                    <span asp-validation-for="Stock" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2 fw-semibold rounded-pill shadow-sm">
+                        ⬅ Geri Dön
+                    </a>
+                    <button type="submit" class="btn btn-turquoise px-4 py-2 fw-semibold rounded-pill shadow-sm">
+                        💾 Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "Yönetici Girişi";
+}
+
+<div class="login-wrapper">
+    <div class="login-card shadow-lg">
+        <div class="text-center mb-4">
+            <div class="icon-circle">
+                📚
+            </div>
+            <h2 class="fw-bold mt-3">Yönetici Girişi</h2>
+            <p class="text-muted">Kütüphane sistemine erişmek için giriş yapın</p>
+        </div>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <form asp-action="Index" method="post">
+            <div class="form-group mb-3">
+                <label for="username" class="fw-semibold">Kullanıcı Adı</label>
+                <input id="username" name="username" class="form-control form-control-lg" required />
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="password" class="fw-semibold">Şifre</label>
+                <input id="password" name="password" type="password" class="form-control form-control-lg" required />
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-login btn-lg fw-bold">Giriş Yap</button>
+            </div>
+
+            <p class="text-center text-muted mt-4 small">
+                © 2025 - Kütüphane Yönetim Sistemi
+            </p>
+        </form>
+    </div>
+</div>
+
+

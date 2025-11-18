@@ -1,0 +1,19 @@
+Bir Yönetici Giriş Ekranı(Login ekranı) yapıldı. Buradan "username" ve "password" ile giriş yapılır.
+
+Ana ekranın üst kısmında "Ana Sayfa", "Kitaplar", "Üyeler" ve "Ödünç İşlemleri" butonlarının bulunduğu bir navbar vardır. Bu navbara her sayfadan erişebiliriz.
+
+Ekranın orta kısmında "Toplam Kitap", "Üye Sayısı" ve "Ödünçteki Kitaplar" şeklinde bir kart yapısı bulunur burada veritabanından elde edilen sayısal değerler görünür.(veritabanı işlemleri: sql server)
+
+Ana ekranın en alt kısmındaki Hızlı Erişim bölümünde "Kitap Ekle", "Kitap Listesi", "Üye Listesi" ve "Ödünç İşlemleri" butonları bulunur(Buradan hızlıca erişim sağlanır.)
+
+"Kitap Ekle" kısmından kitap ekleme işlemlerini yaparız. Kitap adı, yazar, tür ve stok miktarı gibi veritabanında saklanacak değerleri girip kaydederiz. Aynı zamanda Google Book Api'den kitapların görsellerini de çekeriz bu sayede "Kitaplar" butonuna tıkladığımızda kitabın ismi, yazarı, türü ve stok miktarı dışında resmi de bulunur.
+
+"Kitaplar" kısmında eklediğimiz kitaplar kart görünümünde bulunur. Burada kitapları daha rahat bulabilmek için kitap adı, yazar ve tür özelliklerine göre filtreleyip görüntüleyebiliriz. Kart görünümünde kalem ve çöp kutusu simgeleri vardır. Kalem simgesine tıkladığımızda kitapla alakalı bir özellik yanlış girilmişse düzenleyip tekrar kaydedebiliriz. Çöp kutusuna tıkladığımızda "Kitabı silmek istiyor musunuz" uyarısı gelir buradan kitabı silebiliriz.
+
+Üyeler kısmında üye listesini görebiliriz aynı zamanda sayfanın sol üstünde bulunan "Yeni Üye ekle" butonunda "Ad Soyad", "Telefon" ve "E-posta" bilgilerini girip kaydet butonuna bastığımızda hem veritabanında hem de üye listesi kısmında yeni üye oluşturmuş oluruz. Üye tablosunda da tıpkı kitaplar kısmında olduğu gibi kalem ve çöp kutusu simgesi yer alır. İşlevsellikleri aynıdır
+
+Ödünç İşlemleri kısmı da geçmiş ödünç verme işlemlerinin göründüğü kısımdır. Sayfanın sol üstünde yer alan "Yeni ödünç ver" kısmına tıkladığımızda "Üye", "Kitap", "Alış Tarihi" ve "Teslim Tarihi" kısımlarını doldururuz böylece yeni bir ödünç verme işlemi gerçekleştirmiş oluruz. Bu kısımda veritabanı üzerinde kitap ve üye arasında eşleştirme olur ve buna bağlı olarak kitaplar sekmesinde de görüntüleyeceğimiz üzere kitabın stok miktarında azalma olur. Aynı zamanda ödünç alma işlemleri de bu sekmede olur ve iade aldıktan sonra tekrardan stok miktarının artması gibi işlemler olur. Kitap belirtilen teslim tarihinde iade edilmezse iade edilmedi mesajı görünür.
+
+Son olarak ekranın sağ üst kısmında "Çıkış Yap" butonu yer alır. Bu butona bastığımızda bizi login ekranına yönlendirir.
+
+

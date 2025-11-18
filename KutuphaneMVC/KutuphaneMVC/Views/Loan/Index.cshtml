@@ -1,0 +1,82 @@
+@model IEnumerable<KutuphaneMVC.Models.Loan>
+@{
+    ViewData["Title"] = "Ödünçteki Kitaplar";
+}
+
+<div class="container mt-5">
+    <h2 class="page-title mb-4 text-center">📚 @ViewData["Title"]</h2>
+
+    <div class="d-flex justify-content-between mb-3">
+        <a asp-action="Create" class="btn btn-turquoise fw-semibold shadow-sm">➕ Yeni Ödünç Ver</a>
+
+        <form method="get" asp-action="Index" class="d-flex gap-2">
+            <input type="text" name="search" class="form-control" placeholder="Üye veya kitap adına göre ara..." />
+            <button type="submit" class="btn btn-outline-turquoise">🔍 Ara</button>
+        </form>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center fw-semibold">@TempData["Success"]</div>
+    }
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <table class="table table-hover align-middle text-center mb-0">
+            <thead class="table-turquoise text-white">
+                <tr>
+                    <th>Üye</th>
+                    <th>Kitap</th>
+                    <th>Alış Tarihi</th>
+                    <th>Teslim Tarihi</th>
+                    <th>Durum</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var geciktiMi = item.DueDate < DateTime.Now && item.ReturnDate == null;
+                    <tr class="@(geciktiMi ? "table-danger" : "")">
+                        <td>@item.Member.FullName</td>
+                        <td>@item.Book.Title</td>
+                        <td>@item.BorrowDate.ToShortDateString()</td>
+                        <td>@item.DueDate.ToShortDateString()</td>
+                        <td>
+                            @if (item.ReturnDate == null)
+                            {
+                                if (geciktiMi)
+                                {
+                                    <span class="badge bg-danger text-white px-3 py-2">⏰ Gecikti</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark px-3 py-2">📖 Teslim Edilmedi</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="badge bg-success text-white px-3 py-2">
+                                    ✅ İade Edildi (@item.ReturnDate?.ToShortDateString())
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.ReturnDate == null)
+                            {
+                                <a asp-action="ReturnBook" asp-route-id="@item.LoanId"
+                                   class="btn btn-sm btn-outline-turquoise shadow-sm">📦 İade Et</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted mt-4">
+            <p>📭 Şu anda ödünçte kitap bulunmuyor.</p>
+        </div>
+    }
+</div>

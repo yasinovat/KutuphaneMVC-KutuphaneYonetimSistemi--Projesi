@@ -1,0 +1,104 @@
+@model List<KutuphaneMVC.Models.User>
+@{
+    ViewData["Title"] = "Kullanıcı Yönetimi";
+}
+
+<h2 class="mb-4 fw-bold text-primary">👤 Kullanıcı Yönetimi</h2>
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-success">
+        ➕ Yeni Kullanıcı Oluştur
+    </a>
+</div>
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Kullanıcı Adı</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Bağlı Üye</th>
+                    <th>Durum</th>
+                    <th>Kayıt Tarihi</th>
+                    <th>Son Giriş</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr class="@(user.IsActive ? "" : "table-secondary")">
+                        <td>
+                            <strong>@user.Username</strong>
+                        </td>
+                        <td>@user.Email</td>
+                        <td>
+                            @if (user.Role == KutuphaneMVC.Models.UserRole.Admin)
+                            {
+                                <span class="badge bg-warning text-dark">👑 Admin</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info">👤 Kullanıcı</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.Member != null)
+                            {
+                                <span>@user.Member.FullName</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.IsActive)
+                            {
+                                <span class="badge bg-success">✅ Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">❌ Pasif</span>
+                            }
+                        </td>
+                        <td>@user.CreatedDate.ToShortDateString()</td>
+                        <td>
+                            @if (user.LastLoginDate.HasValue)
+                            {
+                                @user.LastLoginDate.Value.ToString("dd.MM.yyyy HH:mm")
+                            }
+                            else
+                            {
+                                <span class="text-muted">Hiç giriş yapmadı</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="btn-group-vertical" role="group">
+                                <a asp-action="Edit" asp-route-id="@user.UserId" class="btn btn-sm btn-primary mb-1">
+                                    ✏️ Düzenle
+                                </a>
+                                <form asp-action="ToggleActive" asp-route-id="@user.UserId" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm @(user.IsActive ? "btn-warning" : "btn-success") w-100"
+                                            onclick="return confirm('@(user.IsActive ? "Bu kullanıcıyı pasif yapmak istediğinizden emin misiniz?" : "Bu kullanıcıyı aktif yapmak istediğinizden emin misiniz?")');">
+                                        @(user.IsActive ? "⏸️ Pasif Yap" : "▶️ Aktif Yap")
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <strong>👤 Henüz kullanıcı bulunmamaktadır.</strong>
+    </div>
+}

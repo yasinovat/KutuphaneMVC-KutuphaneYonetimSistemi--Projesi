@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KutuphaneMVC.Controllers
 {
-    [AuthFilter]
+    [AuthorizeRole("Admin")]
     public class LoanController : Controller
     {
         private readonly LibraryContext _context;

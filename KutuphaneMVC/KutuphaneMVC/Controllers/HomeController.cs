@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace KutuphaneMVC.Controllers
 {
-    [AuthFilter]
+    [AuthorizeRole("Admin")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -23,14 +23,16 @@ namespace KutuphaneMVC.Controllers
         {
             try
             {
-                // Toplam stok miktarı (kitap türü sayısı yerine toplam kitap sayısı)
-                ViewBag.KitapSayisi = _context.Books.Sum(b => b.Stock);
+                // Toplam kitap sayısı = Mevcut stok + Ödünç verilen kitaplar
+                var totalStock = _context.Books.Sum(b => b.Stock);
+                var activeLoanCount = _context.Loans.Count(l => l.ReturnDate == null);
+                ViewBag.KitapSayisi = totalStock + activeLoanCount;
 
                 // Toplam üye sayısı
                 ViewBag.UyeSayisi = _context.Members.Count();
 
                 // Henüz iade edilmemiş kitap sayısı
-                ViewBag.OduncSayisi = _context.Loans.Count(l => l.ReturnDate == null);
+                ViewBag.OduncSayisi = activeLoanCount;
             }
             catch (Exception ex)
             {

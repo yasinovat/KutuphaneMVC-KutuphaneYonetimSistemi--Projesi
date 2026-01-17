@@ -1,0 +1,170 @@
+@model List<KutuphaneMVC.Models.LoanRequest>
+@{
+    ViewData["Title"] = "Ödünç İstekleri Yönetimi";
+}
+
+<h2 class="mb-4 fw-bold text-primary">📋 Ödünç İstekleri Yönetimi</h2>
+
+<!-- Filtre -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form asp-action="Index" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Durum Filtresi</label>
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Bekleyen İstekler</option>
+                        <option value="Pending" selected="@(ViewBag.StatusFilter == "Pending")">⏳ Bekleyen</option>
+                        <option value="Approved" selected="@(ViewBag.StatusFilter == "Approved")">✅ Onaylanan</option>
+                        <option value="Rejected" selected="@(ViewBag.StatusFilter == "Rejected")">❌ Reddedilen</option>
+                        <option value="Cancelled" selected="@(ViewBag.StatusFilter == "Cancelled")">🚫 İptal Edilen</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">🔍 Filtrele</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Kullanıcı</th>
+                    <th>Kitap</th>
+                    <th>İstek Tarihi</th>
+                    <th>İstenen İade Tarihi</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var request in Model)
+                {
+                    var statusBadge = request.RequestStatus switch
+                    {
+                        KutuphaneMVC.Models.RequestStatus.Pending => "bg-warning text-dark",
+                        KutuphaneMVC.Models.RequestStatus.Approved => "bg-success",
+                        KutuphaneMVC.Models.RequestStatus.Rejected => "bg-danger",
+                        KutuphaneMVC.Models.RequestStatus.Cancelled => "bg-secondary",
+                        _ => "bg-secondary"
+                    };
+
+                    var statusText = request.RequestStatus switch
+                    {
+                        KutuphaneMVC.Models.RequestStatus.Pending => "⏳ Bekliyor",
+                        KutuphaneMVC.Models.RequestStatus.Approved => "✅ Onaylandı",
+                        KutuphaneMVC.Models.RequestStatus.Rejected => "❌ Reddedildi",
+                        KutuphaneMVC.Models.RequestStatus.Cancelled => "🚫 İptal Edildi",
+                        _ => "❓ Bilinmiyor"
+                    };
+                    
+                    <tr>
+                        <td>@request.RequestId</td>
+                        <td>
+                            <strong>@request.RequestedByUser?.Username</strong><br />
+                            <small class="text-muted">@request.RequestedForMember?.FullName</small>
+                        </td>
+                        <td>
+                            <strong>@request.Book?.Title</strong><br />
+                            <small class="text-muted">
+                                @request.Book?.Author
+                                @if (request.Book != null)
+                                {
+                                    <span class="badge @(request.Book.Stock > 0 ? "bg-success" : "bg-danger") ms-1">
+                                        Stok: @request.Book.Stock
+                                    </span>
+                                }
+                            </small>
+                        </td>
+                        <td>
+                            @request.RequestDate.ToString("dd.MM.yyyy")<br />
+                            <small class="text-muted">@request.RequestDate.ToString("HH:mm")</small>
+                        </td>
+                        <td>@request.RequestedDueDate.ToShortDateString()</td>
+                        <td>
+                            <span class="badge @statusBadge">@statusText</span>
+                            @if (request.ProcessedDate.HasValue)
+                            {
+                                <br />
+                                <small class="text-muted">
+                                    @request.ProcessedDate.Value.ToShortDateString()
+                                    @if (request.ProcessedByUser != null)
+                                    {
+                                        <text>(@request.ProcessedByUser.Username)</text>
+                                    }
+                                </small>
+                            }
+                        </td>
+                        <td>
+                            @if (request.RequestStatus == KutuphaneMVC.Models.RequestStatus.Pending)
+                            {
+                                <div class="btn-group-vertical" role="group">
+                                    <form asp-action="Approve" method="post" class="d-inline mb-1"
+                                          onsubmit="return confirm('Bu isteği onaylamak istediğinizden emin misiniz? Ödünç kaydı oluşturulacak ve stok düşecek.');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@request.RequestId" />
+                                        <button type="submit" class="btn btn-sm btn-success w-100"
+                                                @(request.Book == null || request.Book.Stock <= 0 ? "disabled" : "")>
+                                            ✅ Onayla
+                                        </button>
+                                    </form>
+                                    
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" 
+                                            data-bs-target="#rejectModal@(request.RequestId)">
+                                        ❌ Reddet
+                                    </button>
+                                </div>
+
+                                <!-- Red Modal -->
+                                <div class="modal fade" id="rejectModal@(request.RequestId)" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form asp-action="Reject" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@request.RequestId" />
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">İsteği Reddet</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <label class="form-label">Red Nedeni (Opsiyonel)</label>
+                                                    <textarea name="adminNotes" class="form-control" rows="3" 
+                                                              placeholder="Kullanıcıya gösterilecek red nedeni..."></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                                                    <button type="submit" class="btn btn-danger">Reddet</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                @if (!string.IsNullOrEmpty(request.AdminNotes))
+                                {
+                                    <small class="text-muted">
+                                        <strong>Not:</strong> @request.AdminNotes
+                                    </small>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <strong>📋 Seçilen filtreye uygun istek bulunamadı.</strong>
+    </div>
+}

@@ -1,0 +1,107 @@
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="login-wrapper">
+    <div class="login-card shadow-lg" style="max-width: 600px;">
+        <div class="text-center mb-4">
+            <div class="icon-circle">
+                ✍️
+            </div>
+            <h2 class="fw-bold mt-3">Yeni Hesap Oluştur</h2>
+            <p class="text-muted">Kütüphane sistemine kayıt olun</p>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+
+        <form asp-action="Register" method="post">
+            @Html.AntiForgeryToken()
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="fullName" class="fw-semibold">Ad Soyad <span class="text-danger">*</span></label>
+                    <input id="fullName" name="fullName" class="form-control" required />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="fw-semibold">Email <span class="text-danger">*</span></label>
+                    <input id="email" name="email" type="email" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="username" class="fw-semibold">Kullanıcı Adı <span class="text-danger">*</span></label>
+                    <input id="username" name="username" class="form-control" required />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="fw-semibold">Telefon</label>
+                    <input id="phone" name="phone" class="form-control" placeholder="05XXXXXXXXX" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="password" class="fw-semibold">Şifre <span class="text-danger">*</span></label>
+                    <input id="password" name="password" type="password" class="form-control" required minlength="8" />
+                    <small class="text-muted">En az 8 karakter</small>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="confirmPassword" class="fw-semibold">Şifre Tekrar <span class="text-danger">*</span></label>
+                    <input id="confirmPassword" name="confirmPassword" type="password" class="form-control" required minlength="8" />
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-login btn-lg fw-bold">Kayıt Ol</button>
+                <a asp-controller="Login" asp-action="Index" class="btn btn-outline-secondary">Giriş Sayfasına Dön</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .login-wrapper {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #00695C, #004D40);
+        margin: -1rem;
+        padding: 2rem;
+    }
+
+    .login-card {
+        background: white;
+        border-radius: 15px;
+        padding: 3rem;
+        width: 100%;
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #00897B, #00695C);
+        border-radius: 50%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.5rem;
+    }
+
+    .btn-login {
+        background: linear-gradient(90deg, #00897B, #00695C);
+        color: white;
+        border: none;
+    }
+
+    .btn-login:hover {
+        background: linear-gradient(90deg, #00695C, #004D40);
+        color: white;
+    }
+</style>

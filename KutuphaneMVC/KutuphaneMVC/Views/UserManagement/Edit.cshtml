@@ -1,0 +1,137 @@
+@model KutuphaneMVC.Models.User
+@{
+    ViewData["Title"] = "Kullanıcı Düzenle";
+}
+
+<h2 class="mb-4 fw-bold text-primary">✏️ Kullanıcı Düzenle: @Model.Username</h2>
+
+<div class="card">
+    <div class="card-body">
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+
+        <form asp-action="Edit" asp-route-id="@Model.UserId" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Kullanıcı Adı</label>
+                    <input type="text" class="form-control" value="@Model.Username" disabled />
+                    <small class="text-muted">Kullanıcı adı değiştirilemez</small>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Rol</label>
+                    <input type="text" class="form-control" value="@Model.Role.ToString()" disabled />
+                    <small class="text-muted">Rol değiştirilemez</small>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" id="email" name="email" value="@Model.Email" required />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="isActive" class="form-label">Durum <span class="text-danger">*</span></label>
+                    <select class="form-select" id="isActive" name="isActive">
+                        <option value="true" selected="@Model.IsActive">✅ Aktif</option>
+                        <option value="false" selected="@(!Model.IsActive)">❌ Pasif</option>
+                    </select>
+                </div>
+            </div>
+
+            @if (Model.Member != null)
+            {
+                <hr />
+                <h5 class="mb-3">Üye Bilgileri</h5>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="fullName" class="form-label">Ad Soyad</label>
+                        <input type="text" class="form-control" id="fullName" name="fullName" value="@Model.Member.FullName" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="phone" class="form-label">Telefon</label>
+                        <input type="text" class="form-control" id="phone" name="phone" value="@Model.Member.Phone" />
+                    </div>
+                </div>
+            }
+
+            <hr />
+            <h5 class="mb-3">Şifre Sıfırlama</h5>
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Yeni Şifre (Boş bırakılırsa şifre değişmez)</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="newPassword" placeholder="Yeni şifre giriniz..." />
+                        <button type="button" class="btn btn-warning" onclick="resetPassword()">
+                            🔑 Şifreyi Sıfırla
+                        </button>
+                    </div>
+                    <small class="text-muted">En az 8 karakter</small>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Kayıt Bilgileri</label>
+                <p class="text-muted mb-0">
+                    <strong>Kayıt Tarihi:</strong> @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")<br />
+                    @if (Model.LastLoginDate.HasValue)
+                    {
+                        <strong>Son Giriş:</strong> @Model.LastLoginDate.Value.ToString("dd.MM.yyyy HH:mm")
+                    }
+                    else
+                    {
+                        <strong>Son Giriş:</strong> <span>Hiç giriş yapmadı</span>
+                    }
+                </p>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-secondary">⬅ Geri Dön</a>
+                <button type="submit" class="btn btn-success">✅ Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function resetPassword() {
+        const newPassword = document.getElementById('newPassword').value;
+        
+        if (!newPassword || newPassword.length < 8) {
+            alert('Şifre en az 8 karakter olmalıdır!');
+            return;
+        }
+        
+        if (!confirm('Kullanıcının şifresini sıfırlamak istediğinizden emin misiniz?')) {
+            return;
+        }
+        
+        // Form oluştur ve gönder
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '@Url.Action("ResetPassword", "UserManagement", new { id = Model.UserId })';
+        
+        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = '__RequestVerificationToken';
+        tokenInput.value = csrfToken;
+        form.appendChild(tokenInput);
+        
+        const passwordInput = document.createElement('input');
+        passwordInput.type = 'hidden';
+        passwordInput.name = 'newPassword';
+        passwordInput.value = newPassword;
+        form.appendChild(passwordInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>

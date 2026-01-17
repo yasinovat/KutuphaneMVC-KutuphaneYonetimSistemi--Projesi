@@ -1,0 +1,112 @@
+@model List<KutuphaneMVC.Models.LoanRequest>
+@{
+    ViewData["Title"] = "Ödünç İsteklerim";
+}
+
+<h2 class="mb-4 fw-bold text-primary">📋 Ödünç İsteklerim</h2>
+
+<p class="mb-4">Buradan kitap için yaptığınız ödünç isteklerini görüntüleyebilir ve bekleyen isteklerinizi iptal edebilirsiniz.</p>
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Kitap</th>
+                    <th>İstek Tarihi</th>
+                    <th>İstenen İade Tarihi</th>
+                    <th>Durum</th>
+                    <th>İşlem Tarihi</th>
+                    <th>Admin Notu</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var request in Model)
+                {
+                    var statusBadge = request.RequestStatus switch
+                    {
+                        KutuphaneMVC.Models.RequestStatus.Pending => "bg-warning text-dark",
+                        KutuphaneMVC.Models.RequestStatus.Approved => "bg-success",
+                        KutuphaneMVC.Models.RequestStatus.Rejected => "bg-danger",
+                        KutuphaneMVC.Models.RequestStatus.Cancelled => "bg-secondary",
+                        _ => "bg-secondary"
+                    };
+
+                    var statusText = request.RequestStatus switch
+                    {
+                        KutuphaneMVC.Models.RequestStatus.Pending => "⏳ Bekliyor",
+                        KutuphaneMVC.Models.RequestStatus.Approved => "✅ Onaylandı",
+                        KutuphaneMVC.Models.RequestStatus.Rejected => "❌ Reddedildi",
+                        KutuphaneMVC.Models.RequestStatus.Cancelled => "🚫 İptal Edildi",
+                        _ => "❓ Bilinmiyor"
+                    };
+                    
+                    <tr>
+                        <td>
+                            <strong>@request.Book?.Title</strong><br />
+                            <small class="text-muted">@request.Book?.Author</small>
+                        </td>
+                        <td>@request.RequestDate.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@request.RequestedDueDate.ToShortDateString()</td>
+                        <td>
+                            <span class="badge @statusBadge">@statusText</span>
+                        </td>
+                        <td>
+                            @if (request.ProcessedDate.HasValue)
+                            {
+                                @request.ProcessedDate.Value.ToString("dd.MM.yyyy HH:mm")
+                                @if (request.ProcessedByUser != null)
+                                {
+                                    <br /><small class="text-muted">(@request.ProcessedByUser.Username)</small>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(request.AdminNotes))
+                            {
+                                @request.AdminNotes
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>
+                            @if (request.RequestStatus == KutuphaneMVC.Models.RequestStatus.Pending)
+                            {
+                                <form asp-controller="UserRequest" asp-action="Cancel" method="post" class="d-inline"
+                                      onsubmit="return confirm('Bu isteği iptal etmek istediğinizden emin misiniz?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@request.RequestId" />
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        🚫 İptal Et
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <strong>📋 Henüz ödünç isteğiniz bulunmamaktadır.</strong><br />
+        Kitaplar sayfasından istediğiniz kitaplar için ödünç isteği oluşturabilirsiniz.
+    </div>
+    <a asp-controller="UserBook" asp-action="Index" class="btn btn-primary">
+        📚 Kitaplara Göz At
+    </a>
+}

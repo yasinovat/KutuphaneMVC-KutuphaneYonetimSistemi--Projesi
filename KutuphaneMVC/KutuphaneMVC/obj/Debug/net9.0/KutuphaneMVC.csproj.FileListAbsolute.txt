@@ -226,3 +226,4 @@ C:\Users\Nurmelek\Desktop\KutuphaneMVC\KutuphaneMVC\bin\Debug\net9.0\runtimes\wi
 C:\Users\Nurmelek\Desktop\KutuphaneMVC\KutuphaneMVC\obj\Debug\net9.0\KutuphaneMVC.csproj.AssemblyReference.cache
 C:\Users\Nurmelek\Desktop\KutuphaneMVC\KutuphaneMVC\obj\Debug\net9.0\Kutuphan.AA8D76C2.Up2Date
 C:\Users\Nurmelek\Desktop\KutuphaneMVC\KutuphaneMVC\obj\Debug\net9.0\compressed\5iezvtqj0m-irl9ewsg7i.gz
+C:\Users\Nurmelek\Desktop\KutuphaneMVC\KutuphaneMVC\bin\Debug\net9.0\BCrypt.Net-Next.dll

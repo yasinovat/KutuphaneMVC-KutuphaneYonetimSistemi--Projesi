@@ -4,45 +4,51 @@
 
 <div class="dashboard-container container mt-5">
     <div class="text-center mb-5">
-        <h1 class="fw-bold text-dark">Hoş Geldiniz 👋</h1>
-        <p class="text-muted fs-5">Kütüphane Yönetim Paneli'ne hoş geldiniz. Aşağıdan sistem durumunu görebilirsiniz.</p>
+        <h1 class="fw-bold" style="color: #1a237e;">⚡ Yönetici Paneli</h1>
+        <p class="text-muted fs-5">Kütüphane sistemini buradan yönetebilirsiniz.</p>
     </div>
 
     <!-- Bilgi Kartları -->
     <div class="row text-center mb-5">
         <div class="col-md-4 mb-3">
-            <div class="info-card shadow-sm p-4 rounded">
-                <div class="icon bg-primary text-white mb-3"><i class="bi bi-book"></i></div>
-                <h4 class="fw-bold">Toplam Kitap</h4>
-                <p class="fs-5 text-muted">@ViewBag.KitapSayisi</p>
+            <div class="card shadow border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body text-white p-4">
+                    <div style="font-size: 3rem;">📚</div>
+                    <h4 class="fw-bold mt-3">Toplam Kitap</h4>
+                    <p class="fs-2 fw-bold mb-0">@ViewBag.KitapSayisi</p>
+                </div>
             </div>
         </div>
 
         <div class="col-md-4 mb-3">
-            <div class="info-card shadow-sm p-4 rounded">
-                <div class="icon bg-success text-white mb-3"><i class="bi bi-people"></i></div>
-                <h4 class="fw-bold">Üye Sayısı</h4>
-                <p class="fs-5 text-muted">@ViewBag.UyeSayisi</p>
+            <div class="card shadow border-0" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body text-white p-4">
+                    <div style="font-size: 3rem;">👥</div>
+                    <h4 class="fw-bold mt-3">Üye Sayısı</h4>
+                    <p class="fs-2 fw-bold mb-0">@ViewBag.UyeSayisi</p>
+                </div>
             </div>
         </div>
 
         <div class="col-md-4 mb-3">
-            <div class="info-card shadow-sm p-4 rounded">
-                <div class="icon bg-warning text-white mb-3"><i class="bi bi-box-seam"></i></div>
-                <h4 class="fw-bold">Ödünçteki Kitaplar</h4>
-                <p class="fs-5 text-muted">@ViewBag.OduncSayisi</p>
+            <div class="card shadow border-0" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="card-body text-white p-4">
+                    <div style="font-size: 3rem;">📦</div>
+                    <h4 class="fw-bold mt-3">Ödünçteki Kitaplar</h4>
+                    <p class="fs-2 fw-bold mb-0">@ViewBag.OduncSayisi</p>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Hızlı İşlemler -->
     <div class="text-center">
-        <h3 class="fw-semibold mb-4">📌 Hızlı Erişim</h3>
-        <div class="d-flex justify-content-center gap-4 flex-wrap">
-            <a asp-controller="Book" asp-action="Create" class="btn btn-turquoise px-4 py-2 fw-semibold">➕ Kitap Ekle</a>
-            <a asp-controller="Book" asp-action="Index" class="btn btn-outline-turquoise px-4 py-2 fw-semibold">📚 Kitap Listesi</a>
-            <a asp-controller="Member" asp-action="Index" class="btn btn-outline-turquoise px-4 py-2 fw-semibold">👥 Üye Listesi</a>
-            <a asp-controller="Loan" asp-action="Index" class="btn btn-outline-turquoise px-4 py-2 fw-semibold">📦 Ödünç İşlemleri</a>
+        <h3 class="fw-semibold mb-4" style="color: #1a237e;">⚙️ Yönetim İşlemleri</h3>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a asp-controller="Book" asp-action="Create" class="btn btn-lg px-4 py-3 fw-semibold shadow" style="background: #667eea; color: white; border: none;">➕ Kitap Ekle</a>
+            <a asp-controller="Book" asp-action="Index" class="btn btn-lg px-4 py-3 fw-semibold shadow" style="background: #764ba2; color: white; border: none;">📚 Kitap Listesi</a>
+            <a asp-controller="Member" asp-action="Index" class="btn btn-lg px-4 py-3 fw-semibold shadow" style="background: #f5576c; color: white; border: none;">👥 Üye Listesi</a>
+            <a asp-controller="Loan" asp-action="Index" class="btn btn-lg px-4 py-3 fw-semibold shadow" style="background: #00f2fe; color: white; border: none;">📦 Ödünç İşlemleri</a>
         </div>
     </div>
 </div>

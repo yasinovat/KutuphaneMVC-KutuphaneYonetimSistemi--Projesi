@@ -87,6 +87,55 @@ namespace KutuphaneMVC.Migrations
                     b.ToTable("Loans");
                 });
 
+            modelBuilder.Entity("KutuphaneMVC.Models.LoanRequest", b =>
+                {
+                    b.Property<int>("RequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestId"));
+
+                    b.Property<string>("AdminNotes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProcessedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ProcessedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("RequestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RequestStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RequestedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RequestedDueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RequestedForMemberId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RequestId");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("ProcessedByUserId");
+
+                    b.HasIndex("RequestedByUserId");
+
+                    b.HasIndex("RequestedForMemberId");
+
+                    b.ToTable("LoanRequests");
+                });
+
             modelBuilder.Entity("KutuphaneMVC.Models.Member", b =>
                 {
                     b.Property<int>("MemberId")
@@ -112,6 +161,56 @@ namespace KutuphaneMVC.Migrations
                     b.ToTable("Members");
                 });
 
+            modelBuilder.Entity("KutuphaneMVC.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastLoginDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("KutuphaneMVC.Models.Loan", b =>
                 {
                     b.HasOne("KutuphaneMVC.Models.Book", "Book")
@@ -129,6 +228,57 @@ namespace KutuphaneMVC.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("KutuphaneMVC.Models.LoanRequest", b =>
+                {
+                    b.HasOne("KutuphaneMVC.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KutuphaneMVC.Models.User", "ProcessedByUser")
+                        .WithMany("ProcessedLoans")
+                        .HasForeignKey("ProcessedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KutuphaneMVC.Models.User", "RequestedByUser")
+                        .WithMany("RequestedLoans")
+                        .HasForeignKey("RequestedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KutuphaneMVC.Models.Member", "RequestedForMember")
+                        .WithMany()
+                        .HasForeignKey("RequestedForMemberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("ProcessedByUser");
+
+                    b.Navigation("RequestedByUser");
+
+                    b.Navigation("RequestedForMember");
+                });
+
+            modelBuilder.Entity("KutuphaneMVC.Models.User", b =>
+                {
+                    b.HasOne("KutuphaneMVC.Models.Member", "Member")
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("KutuphaneMVC.Models.User", b =>
+                {
+                    b.Navigation("ProcessedLoans");
+
+                    b.Navigation("RequestedLoans");
                 });
 #pragma warning restore 612, 618
         }

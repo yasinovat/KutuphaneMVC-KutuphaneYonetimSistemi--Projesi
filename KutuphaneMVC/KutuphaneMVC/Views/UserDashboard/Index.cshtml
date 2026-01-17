@@ -1,0 +1,230 @@
+@model KutuphaneMVC.Models.User
+@{
+    ViewData["Title"] = "Kullanıcı Paneli";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4 fw-bold" style="color: #00796B;">
+            👋 Merhaba, @Model.Member?.FullName!
+        </h2>
+        <p class="text-muted">Kütüphanemize hoş geldiniz. Kitaplarımıza göz atın ve ödünç alın!</p>
+    </div>
+</div>
+
+<!-- İstatistik Kartları -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 mb-3" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Toplam Kitap</h6>
+                        <h2 class="mb-0 fw-bold">@ViewBag.TotalBooks</h2>
+                    </div>
+                    <div style="font-size: 3rem;">📚</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 mb-3" style="background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Mevcut Kitaplar</h6>
+                        <h2 class="mb-0 fw-bold">@ViewBag.AvailableBooks</h2>
+                    </div>
+                    <div style="font-size: 3rem;">✅</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 mb-3" style="background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Aktif Ödünclerim</h6>
+                        <h2 class="mb-0 fw-bold">@ViewBag.MyActiveLoans</h2>
+                    </div>
+                    <div style="font-size: 3rem;">📦</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 mb-3" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+            <div class="card-body" style="color: #333;">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Bekleyen İsteklerim</h6>
+                        <h2 class="mb-0 fw-bold">@ViewBag.MyPendingRequests</h2>
+                    </div>
+                    <div style="font-size: 3rem;">⏳</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hızlı Erişim -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h4 class="mb-3 fw-bold">🚀 Hızlı Erişim</h4>
+    </div>
+    <div class="col-md-4 mb-3">
+        <a asp-controller="UserBook" asp-action="Index" class="text-decoration-none">
+            <div class="card hover-shadow">
+                <div class="card-body text-center">
+                    <div style="font-size: 3rem;">📚</div>
+                    <h5 class="mt-2">Kitaplara Göz At</h5>
+                    <p class="text-muted">Kitap katalogunu inceleyin</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4 mb-3">
+        <a asp-controller="UserRequest" asp-action="Index" class="text-decoration-none">
+            <div class="card hover-shadow">
+                <div class="card-body text-center">
+                    <div style="font-size: 3rem;">📋</div>
+                    <h5 class="mt-2">İsteklerim</h5>
+                    <p class="text-muted">Ödünç isteklerimi görüntüle</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4 mb-3">
+        <a asp-controller="UserRequest" asp-action="MyLoans" class="text-decoration-none">
+            <div class="card hover-shadow">
+                <div class="card-body text-center">
+                    <div style="font-size: 3rem;">📦</div>
+                    <h5 class="mt-2">Ödünclerim</h5>
+                    <p class="text-muted">Aldığım kitapları görüntüle</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Aktif Ödünçler -->
+@if (ViewBag.ActiveLoans != null && ((List<KutuphaneMVC.Models.Loan>)ViewBag.ActiveLoans).Any())
+{
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="mb-3 fw-bold">📦 Aktif Ödünçlerim</h4>
+        </div>
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Kitap</th>
+                            <th>Alma Tarihi</th>
+                            <th>İade Tarihi</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var loan in (List<KutuphaneMVC.Models.Loan>)ViewBag.ActiveLoans)
+                        {
+                            var daysLeft = (loan.DueDate - DateTime.Now).Days;
+                            var statusClass = daysLeft < 0 ? "danger" : daysLeft <= 3 ? "warning" : "success";
+                            
+                            <tr>
+                                <td>
+                                    <strong>@loan.Book?.Title</strong><br />
+                                    <small class="text-muted">@loan.Book?.Author</small>
+                                </td>
+                                <td>@loan.BorrowDate.ToShortDateString()</td>
+                                <td>@loan.DueDate.ToShortDateString()</td>
+                                <td>
+                                    <span class="badge bg-@statusClass">
+                                        @if (daysLeft < 0)
+                                        {
+                                            <text>@Math.Abs(daysLeft) gün gecikti</text>
+                                        }
+                                        else
+                                        {
+                                            <text>@daysLeft gün kaldı</text>
+                                        }
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Son İstekler -->
+@if (ViewBag.RecentRequests != null && ((List<KutuphaneMVC.Models.LoanRequest>)ViewBag.RecentRequests).Any())
+{
+    <div class="row">
+        <div class="col-12">
+            <h4 class="mb-3 fw-bold">📋 Son İsteklerim</h4>
+        </div>
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Kitap</th>
+                            <th>İstek Tarihi</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var request in (List<KutuphaneMVC.Models.LoanRequest>)ViewBag.RecentRequests)
+                        {
+                            var statusBadge = request.RequestStatus switch
+                            {
+                                KutuphaneMVC.Models.RequestStatus.Pending => "bg-warning",
+                                KutuphaneMVC.Models.RequestStatus.Approved => "bg-success",
+                                KutuphaneMVC.Models.RequestStatus.Rejected => "bg-danger",
+                                KutuphaneMVC.Models.RequestStatus.Cancelled => "bg-secondary",
+                                _ => "bg-secondary"
+                            };
+
+                            var statusText = request.RequestStatus switch
+                            {
+                                KutuphaneMVC.Models.RequestStatus.Pending => "Bekliyor",
+                                KutuphaneMVC.Models.RequestStatus.Approved => "Onaylandı",
+                                KutuphaneMVC.Models.RequestStatus.Rejected => "Reddedildi",
+                                KutuphaneMVC.Models.RequestStatus.Cancelled => "İptal Edildi",
+                                _ => "Bilinmiyor"
+                            };
+                            
+                            <tr>
+                                <td>
+                                    <strong>@request.Book?.Title</strong><br />
+                                    <small class="text-muted">@request.Book?.Author</small>
+                                </td>
+                                <td>@request.RequestDate.ToShortDateString()</td>
+                                <td>
+                                    <span class="badge @statusBadge">@statusText</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .hover-shadow {
+        transition: all 0.3s;
+    }
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+</style>

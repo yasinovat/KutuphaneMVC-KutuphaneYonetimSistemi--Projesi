@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KutuphaneMVC.Controllers
 {
-    [AuthFilter]
+    [AuthorizeRole("Admin")]
     public class BookController : Controller
     {
         private readonly LibraryContext _context;

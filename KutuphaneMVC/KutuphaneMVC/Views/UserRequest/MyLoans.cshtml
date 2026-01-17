@@ -1,0 +1,121 @@
+@model List<KutuphaneMVC.Models.Loan>
+@{
+    ViewData["Title"] = "Ödünclerim";
+}
+
+<h2 class="mb-4 fw-bold text-primary">📦 Ödünclerim</h2>
+
+<p class="mb-4">Aldığınız tüm kitapları ve iade durumlarını görüntüleyebilirsiniz.</p>
+
+@if (Model.Any())
+{
+    var activeLoans = Model.Where(l => l.ReturnDate == null).ToList();
+    
+    <!-- Aktif Ödünçler -->
+    @if (activeLoans.Any())
+    {
+        <h4 class="mb-3 fw-bold text-warning">🔖 Aktif Ödünçler</h4>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover">
+                <thead class="table-warning">
+                    <tr>
+                        <th>Kitap</th>
+                        <th>Alma Tarihi</th>
+                        <th>İade Tarihi</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var loan in activeLoans)
+                    {
+                        var daysLeft = (loan.DueDate - DateTime.Now).Days;
+                        var statusClass = daysLeft < 0 ? "danger" : daysLeft <= 3 ? "warning" : "success";
+                        
+                        <tr>
+                            <td>
+                                <strong>@loan.Book?.Title</strong><br />
+                                <small class="text-muted">@loan.Book?.Author</small>
+                            </td>
+                            <td>@loan.BorrowDate.ToShortDateString()</td>
+                            <td>@loan.DueDate.ToShortDateString()</td>
+                            <td>
+                                <span class="badge bg-@statusClass">
+                                    @if (daysLeft < 0)
+                                    {
+                                        <text>⚠️ @Math.Abs(daysLeft) gün gecikti</text>
+                                    }
+                                    else if (daysLeft <= 3)
+                                    {
+                                        <text>⏰ @daysLeft gün kaldı</text>
+                                    }
+                                    else
+                                    {
+                                        <text>✅ @daysLeft gün kaldı</text>
+                                    }
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    var returnedLoans = Model.Where(l => l.ReturnDate != null).ToList();
+    
+    <!-- İade Edilenler -->
+    @if (returnedLoans.Any())
+    {
+        <h4 class="mb-3 fw-bold text-success">✅ İade Edilenler</h4>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-success">
+                    <tr>
+                        <th>Kitap</th>
+                        <th>Alma Tarihi</th>
+                        <th>İade Edilmesi Gereken</th>
+                        <th>İade Tarihi</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var loan in returnedLoans)
+                    {
+                        var isLate = loan.ReturnDate > loan.DueDate;
+                        var daysLate = isLate ? (loan.ReturnDate.Value - loan.DueDate).Days : 0;
+                        
+                        <tr>
+                            <td>
+                                <strong>@loan.Book?.Title</strong><br />
+                                <small class="text-muted">@loan.Book?.Author</small>
+                            </td>
+                            <td>@loan.BorrowDate.ToShortDateString()</td>
+                            <td>@loan.DueDate.ToShortDateString()</td>
+                            <td>@loan.ReturnDate?.ToShortDateString()</td>
+                            <td>
+                                @if (isLate)
+                                {
+                                    <span class="badge bg-danger">⚠️ @daysLate gün geç iade</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">✅ Zamanında iade</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-info">
+        <strong>📦 Henüz ödünç aldığınız kitap bulunmamaktadır.</strong><br />
+        Kitaplar sayfasından ödünç isteği oluşturabilirsiniz.
+    </div>
+    <a asp-controller="UserBook" asp-action="Index" class="btn btn-primary">
+        📚 Kitaplara Göz At
+    </a>
+}
